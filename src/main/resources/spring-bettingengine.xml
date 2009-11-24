@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<context:annotation-config/>
+	
+	<bean id="bettingEngine" class="dk.bot.bettingengine.BettingEngineImpl">
+		<constructor-arg ref="stateMachineService"/>
+		<constructor-arg ref="regressionCache"/>
+	</bean>
+	
+	<bean id="regressionCache" class="dk.bot.bettingengine.regression.RegressionCacheImpl">
+	<!-- 900sec (15 mins) -->
+		<constructor-arg value="900"/>
+		 <!-- Maximum number of time stamped data per market -->
+		<constructor-arg value="50"/>
+	</bean>
+	
+	<bean id="stateMachineService"
+		class="dk.bot.bettingengine.statemachine.StateMachineServiceImpl">
+		<constructor-arg ref="stateMachineServiceConfig"/>
+		<constructor-arg ref="betApi"/>
+		<constructor-arg ref="bettingEngineDao"/>
+	</bean>
+		
+	<!-- JMX -->
+	<bean id="bettingEngineMBean" class="dk.bot.bettingengine.mbean.BettingEngineMBeanImpl"/>
+	<context:mbean-export/>
+	
+	
+</beans>
